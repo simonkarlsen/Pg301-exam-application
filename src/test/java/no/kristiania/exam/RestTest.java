@@ -43,6 +43,7 @@ class RestTest {
 
     @BeforeAll
     public static void setup() {
+        LOG.info("in setup (tests)");
         wireMockServer = new WireMockServer(wireMockConfig().dynamicPort().notifier(new ConsoleNotifier(true)));
         wireMockServer.start();
 
@@ -60,6 +61,7 @@ class RestTest {
 
     @AfterClass
     public static void tearDown() {
+        LOG.info("in tearDown (tests)");
         if (null != wireMockServer && wireMockServer.isRunning()) {
             wireMockServer.shutdownServer();
         }
@@ -74,6 +76,7 @@ class RestTest {
 
     @PostConstruct
     public void init() {
+        LOG.info("in init (tests)");
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = port;
 //        RestAssured.basePath = "/users";
@@ -82,13 +85,15 @@ class RestTest {
 
     @Test
     public void testBasePathStatusCodePositive() throws URISyntaxException {
+        LOG.info("in testBasePathStatusCodePositive");
         RestAssured.given()
                 .accept(ContentType.JSON)
                 .when()
                 .get(new URI("/users"))
                 .then()
                 .assertThat()
-                .statusCode(HttpURLConnection.HTTP_OK);
+                .statusCode(HttpURLConnection.HTTP_OK)
+                .log().all();
 
     }
 
@@ -96,6 +101,7 @@ class RestTest {
     // user with id 10001 is already in the database because of initialization in /resources/data.sql
     @Test
     public void testUser10001StatusCodePositive() throws URISyntaxException {
+        LOG.info("in testUser10001StatusCodePositive (tests)");
         RestAssured.given()
                 .accept(ContentType.JSON)
                 .when()
@@ -107,6 +113,7 @@ class RestTest {
 
     @Test
     public void deleteUser() {
+        LOG.info("in deleteUser (tests)");
 
         // user with id 10003 is already in the database because of initialization in /resources/data.sql
         RestAssured.given().delete("/users/10003")
@@ -125,6 +132,7 @@ class RestTest {
 
     @Test
     public void testGetAndDeleteNewUser() {
+        LOG.info("in testGetAndDeleteNewUser (tests)");
 
         String newUser = "Askeladden";
         String birthDate = "1950-11-19T23:00:00.000+00:00";
@@ -170,6 +178,7 @@ class RestTest {
 
     @Test
     public void testGetFirstElementInUsersBody() throws URISyntaxException {
+        LOG.info("in testGetFirstElementInUsersBody (tests)");
         RestAssured.given()
                 .accept(ContentType.JSON)
                 .when()
@@ -187,6 +196,7 @@ class RestTest {
 
     @Test
     public void testGetUserPost() throws URISyntaxException {
+        LOG.info("in testGetUserPost (tests)");
 
         // this post has already been created in /resources/data.sql
         //[{"id":11002,"description":"Woah!"}]
@@ -202,6 +212,36 @@ class RestTest {
 
     }
 
-}
+    @Test
+    public void testNewPost() {
+        LOG.info("in testGetAndDeleteNewUser (tests)");
 
-//test
+        String description = "This is a test post";
+
+        Map<String, Object> jsonAsMap = new HashMap<>();
+        jsonAsMap.put("description", description);
+
+
+        RestAssured.given().
+                accept(ContentType.JSON).
+                contentType(ContentType.JSON).
+                body(jsonAsMap).
+                when().
+                // sample user 10002
+                        post("/users/10002/posts")
+                .then()
+                .assertThat()
+                .statusCode(201)
+                .log().all();
+
+
+        // since there is no users created yet (other than hardcoded users in /resources/data.sql)
+        // this will be the first user with a generated id. Therefore it will be 1.
+        RestAssured.given().get("/users/10002/posts")
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .log().all();
+    }
+
+}
