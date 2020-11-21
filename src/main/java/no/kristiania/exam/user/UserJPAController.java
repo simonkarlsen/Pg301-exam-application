@@ -32,13 +32,13 @@ public class UserJPAController {
 
     @GetMapping("/")
     public List<User> home() {
-        LOG.info("home ('/')");
+        LOG.info("home-function called ('/')");
         return userRepository.findAll();
     }
 
     @GetMapping("/users")
     public List<User> retrieveAllUsers() {
-        LOG.info("/users");
+        LOG.info("retrieveAllUsers-function called (/users)");
         return userRepository.findAll();
     }
 
@@ -55,7 +55,7 @@ public class UserJPAController {
         Link link = linkTo(methodOn(UserJPAController.class).retrieveAllUsers()).withSelfRel();
         resource.add(link.withRel("all-users"));
 
-        LOG.info("/users/" + id);
+        LOG.info("retrieveUser() called (/users/" + id);
 
 //        assertThat(link.getHref()).endsWith("/people/2");
 
@@ -72,7 +72,8 @@ public class UserJPAController {
                 fromCurrentRequest().path("/{id}").
                 buildAndExpand(savedUser.getId()).toUri();
 
-        LOG.info("(POST-->) /users \n new user: /users/"+ savedUser.getId());
+        LOG.info("createUser() called. (POST-->) /users \n new user:" + savedUser.getName()
+                + " --> /users/"+ savedUser.getId());
 
         return ResponseEntity.created(location).build();
     }
@@ -81,16 +82,18 @@ public class UserJPAController {
     public void deleteUser(@PathVariable int id) {
         userRepository.deleteById(id);
 
-        LOG.info("(DELETE-->) jpa/users/" + id);
+        LOG.info("deleteUser() called (DELETE-->) jpa/users/" + id);
 
         // nothing returned --> success
     }
 
     @GetMapping("/users/{id}/posts")
     public List<Post> retrieveAllUserPosts(@PathVariable int id) {
+        LOG.info("retrieveAllUserPosts called with id: " + id);
         Optional<User> userOptional = userRepository.findById(id);
 
         if(userOptional.isEmpty()) {
+            LOG.info("retrieveAllUserPosts. No posts found. User with id" + id + " does not exist.");
             throw new UserNotFoundException("id:" + id );
         }
 
@@ -102,17 +105,19 @@ public class UserJPAController {
     public ResponseEntity<Object> createPost(@PathVariable int id,
                                              @RequestBody Post post) {
 
-       Optional<User> userOptional = userRepository.findById(id);
 
-       if(userOptional.isEmpty()) {
-           throw new UserNotFoundException("id:" + id);
-       }
+        Optional<User> userOptional = userRepository.findById(id);
 
-       User user = userOptional.get();
+        if(userOptional.isEmpty()) {
+            LOG.info("createPost. User with id" + id + " does not exist.");
+            throw new UserNotFoundException("id:" + id);
+        }
 
-       post.setUser(user);
+        User user = userOptional.get();
 
-       postRepository.save(post);
+        post.setUser(user);
+
+        postRepository.save(post);
 
         // user/{id} --> /user/savedUser.getId()
         URI location = ServletUriComponentsBuilder.
@@ -121,6 +126,9 @@ public class UserJPAController {
 
         LOG.info("(POST-->) /jpa/users/{id}/posts\n new post: /jpa/users/{id}/posts/"
                 + post.getId());
+
+        LOG.info("post:" + post.getDescription()
+                + ", by user" + user.getName());
 
         return ResponseEntity.created(location).build();
     }
