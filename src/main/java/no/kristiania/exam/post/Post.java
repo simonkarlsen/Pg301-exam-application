@@ -1,5 +1,6 @@
 package no.kristiania.exam.post;
 
+import io.swagger.annotations.ApiModel;
 import net.minidev.json.annotate.JsonIgnore;
 import no.kristiania.exam.user.User;
 import org.hibernate.validator.constraints.Length;
@@ -7,6 +8,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+@ApiModel(description = "Post details.")
 @Entity
 public class Post {
 
