@@ -6,7 +6,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Release artifact build
-RUN mvn package
+RUN mvn install -DskipTests
 
 FROM openjdk:8-jdk-alpine
 
@@ -15,3 +15,4 @@ COPY --from=builder /app/target/exam-*.jar /exam-0.0.1-SNAPSHOT.jar
 
 # Run on container startup
 CMD ["java", "-Djava.security.egdls =file:/dev/./urandom", "-jar", "/exam-0.0.1-SNAPSHOT.jar"]
+
