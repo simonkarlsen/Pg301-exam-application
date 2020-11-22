@@ -6,7 +6,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Release artifact build
-RUN mvn install -DskipTests
+RUN mvn package -DskipTests
 
 FROM openjdk:8-jdk-alpine
 
