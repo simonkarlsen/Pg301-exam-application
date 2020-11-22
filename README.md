@@ -1,4 +1,8 @@
-#Exam application
+[![Build Status](https://travis-ci.com/simonkarlsen/Pg301-exam-application.svg?branch=master)](https://travis-ci.com/simonkarlsen/Pg301-exam-application)
+
+
+Exam application
+--
 ____
 Docker
 --
