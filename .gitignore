@@ -33,8 +33,9 @@ build/
 .vscode/
 
 ## google key
-exam1pg301-3e8c21e61719.json
+/exam1pg301.json
 /exam1pg301-3e8c21e61719.json
 /influxdb/
 /types.db/
+
 
