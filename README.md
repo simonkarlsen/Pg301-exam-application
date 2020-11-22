@@ -12,18 +12,15 @@ Docker
 Aktiver Google Container Registry for prosjektet.
 
 Det må lages en Service Account som Travis-CI kan bruke til å pushe image til Google Container Registry.
-1. Gi Service Accounten en rolle som Storage Admin.
-2. Last ned en .json-nøkkel som Storage Admin kan bruke.
-Nøkkelen kan få navnet exam1pg301 og plasses i root i prosjektet.
+
+    * Gi Service Accounten en rolle som Storage Admin.
+    * Last ned en .json-nøkkel som Storage Admin kan bruke.
+    * Nøkkelen kan få navnet exam1pg301 og plasses i root i prosjektet.
+    
 Krypter nøkkelen med kommandoen:
 
 `travis encypt-file --pro [nøkkelnavn].json --add`
-
-Deretter kopier melding som kommer opp under ("openssl aes-256-cbc ...")
-inn i i travis.yml (erstatt den som er der).
-
-(I travis.yml:)
-gcloud auth activate-service-account --key-file=[nøkkelnavn].json
+(erstatt den som er der --> "openssl aes-256-cbc ...").
 
 Krypter prosjektID:
 `travis encrypt --pro GCP_PROJECT_ID="[GCP Prosjektets ID]" --add`
@@ -43,7 +40,10 @@ Metrics
  #####Start Grafana med docker:
  
  `docker run -d -p 3000:3000 --name grafana grafana/grafana:6.5.0`
- hvis dere går til http://localhost:3000/ får dere opp et enkelt brukergrensesnitt. - I grafana, Konfigurer en datasource og bruk følgende verdi som URL
+ 
+Gå til 
+`http://localhost:3000/`
+for å få opp et enkelt brukergrensesnitt. - I grafana, Konfigurer en datasource og bruk følgende verdi som URL
  
  `http://host.docker.internal:8086`
  
@@ -55,8 +55,9 @@ Metrics
  Logger
  --
  
- Få tak i egen token (LOGZ_TOKEN) og url (LOGZ_URL):
-   Gå inn på Logz.io 
+Få tak i egen token (LOGZ_TOKEN) og url (LOGZ_URL):
+
+    Gå inn på Logz.io 
          -> Send your data 
              -> Libraries -
                  > Java - logback appender
