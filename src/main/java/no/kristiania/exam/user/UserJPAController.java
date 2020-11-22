@@ -71,13 +71,13 @@ public class UserJPAController {
         LOG.info("retrieveAllUsers-function called (/users)");
 
         DistributionSummary
-                .builder("user.amount.users")
+                .builder("user.retrieveAllUsers.users")
                 .baseUnit("nr")
                 .register(meterRegistry)
                 .record(userRepository.findAll().size());
 
         Gauge
-                .builder("user.kegs.avg", userService, userService::getUserCount)
+                .builder("user.amount.users", userService, userService::getUserCount)
                 .register(meterRegistry);
         LOG.info("User count: " + userService.getUserCountToString(userService.getUserCount(userService)));
 
@@ -90,10 +90,10 @@ public class UserJPAController {
         Optional<User> user = userRepository.findById(id);
 
         if (user.isEmpty()) {
-            LOG.info("/users/" + id + " not found!");
+            LOG.warning("/users/" + id + " not found!");
 
-            meterRegistry.counter("user.retrieveUser.count", "result", Result.FAILURE.toString()).increment();
-            LOG.info(Result.FAILURE.toString());
+            meterRegistry.counter("user.count.retrieveUser", "result", Result.FAILURE.toString()).increment();
+            LOG.warning(Result.FAILURE.toString());
 
             throw new UserNotFoundException("id:" + id);
         }
@@ -151,7 +151,7 @@ public class UserJPAController {
         Optional<User> userOptional = userRepository.findById(id);
 
         if(userOptional.isEmpty()) {
-            LOG.info("retrieveAllUserPosts. No posts found. User with id" + id + " does not exist.");
+            LOG.warning("retrieveAllUserPosts. No posts found. User with id" + id + " does not exist.");
             throw new UserNotFoundException("id:" + id );
         }
 
@@ -171,7 +171,7 @@ public class UserJPAController {
         Optional<User> userOptional = userRepository.findById(id);
 
         if(userOptional.isEmpty()) {
-            LOG.info("createPost. User with id" + id + " does not exist.");
+            LOG.warning("createPost. User with id" + id + " does not exist.");
             throw new UserNotFoundException("id:" + id);
         }
 
