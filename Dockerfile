@@ -8,9 +8,9 @@ COPY src ./src
 # Release artifact build
 RUN mvn package -DskipTests
 
-FROM openjdk:11-jre
+FROM openjdk:8-jdk-alpine
 
-# Copy jar to prod image
+# Copy jar to image
 COPY --from=builder /app/target/exam-*.jar /exam-0.0.1-SNAPSHOT.jar
 
 # Run on container startup
