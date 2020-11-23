@@ -8,11 +8,10 @@ COPY src ./src
 # Release artifact build
 RUN mvn package -DskipTests
 
-FROM openjdk:8-jdk-alpine
+FROM adoptopenjdk/openjdk11:alpine-slim
 
 # Copy jar to image
 COPY --from=builder /app/target/exam-*.jar /exam-0.0.1-SNAPSHOT.jar
 
 # Run on container startup
-CMD ["java", "-Djava.security.egdls =file:/dev/./urandom", "-jar", "/exam-0.0.1-SNAPSHOT.jar"]
-
+ENTRYPOINT ["java","-jar","/app/exam-0.0.1-SNAPSHOT.jar"]
