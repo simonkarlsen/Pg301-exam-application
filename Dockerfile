@@ -14,5 +14,4 @@ FROM adoptopenjdk/openjdk11:alpine-slim
 COPY --from=builder /app/target/exam-*.jar /exam-0.0.1-SNAPSHOT.jar
 
 # Run on container startup
-ENTRYPOINT ["java", "-Djava.security.egdls =file:/dev/./urandom", "-jar", "/exam-0.0.1-SNAPSHOT.jar"]
-
+ENTRYPOINT ["java","-jar","/app/exam-0.0.1-SNAPSHOT.jar"]
